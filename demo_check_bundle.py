@@ -110,7 +110,7 @@ def display_bundle_check(book: OrderBookState, question: str):
     # ── BƯỚC 2: KIỂM TRA BUNDLE COST ──
     print()
     print("=" * 60)
-    print("BUOC 2: KIEM TRA BUNDLE COST")
+    print("BƯỚC 2: KIỂM TRA BUNDLE COST")
     print("=" * 60)
     print()
     print(f"  +------------------------------------------------+")
@@ -133,19 +133,19 @@ def display_bundle_check(book: OrderBookState, question: str):
     print()
 
     if bundle_cost > MAX_BUNDLE_COST:
-        print(f"  [NO] Bundle ${bundle_cost:.4f} > max ${MAX_BUNDLE_COST:.3f} --> KHONG VAO LENH!")
-        print(f"  Lo neu vao = ${profit:.4f}/pair")
+        print(f"  [NO] Bundle ${bundle_cost:.4f} > max ${MAX_BUNDLE_COST:.3f} --> KHÔNG VÀO LỆNH!")
+        print(f"  Lỗ nếu vào = ${profit:.4f}/pair")
         print()
-        print("  --> Skip buoc 3 (clip size) vi bundle qua dat.")
+        print("  --> Bỏ qua bước 3 (clip size) vì bundle quá đắt.")
         return
 
-    print(f"  [OK] Bundle ${bundle_cost:.4f} <= max ${MAX_BUNDLE_COST:.3f} --> CO THE VAO LENH!")
-    print(f"  Profit potential = $1.00 - ${bundle_cost:.4f} = ${profit:.4f}/pair")
+    print(f"  [OK] Bundle ${bundle_cost:.4f} <= max ${MAX_BUNDLE_COST:.3f} --> CÓ THỂ VÀO LỆNH!")
+    print(f"  Lợi nhuận tiềm năng = $1.00 - ${bundle_cost:.4f} = ${profit:.4f}/cặp")
 
     # ── BƯỚC 3: CHỌN CLIP SIZE (chỉ khi bundle OK) ──
     print()
     print("=" * 60)
-    print("BUOC 3: CHON CLIP SIZE")
+    print("BƯỚC 3: CHỌN CLIP SIZE")
     print("=" * 60)
     print()
     print(f"  Clip Ladder : {CLIP_LADDER}")
@@ -156,24 +156,24 @@ def display_bundle_check(book: OrderBookState, question: str):
     print(f"  Min depth   : min({book.best_ask_yes_size:.0f}, {book.best_ask_no_size:.0f}) = {avail_depth:.0f}")
     print()
 
-    print(f"  Thu tung clip (lon -> nho):")
+    print(f"  Thử từng clip (lớn → nhỏ):")
     for size in sorted(CLIP_LADDER, reverse=True):
         required = max(DEPTH_MIN, size * 2)
         ok = avail_depth >= required
         mark = "[OK]" if ok else "[X] "
         cmp = ">=" if ok else "< "
-        print(f"    clip={size:>2} -> can depth >= max({DEPTH_MIN:.0f}, {size}x2)={required:.0f} -> {avail_depth:.0f} {cmp} {required:.0f} {mark}")
+        print(f"    clip={size:>2} → cần depth >= max({DEPTH_MIN:.0f}, {size}x2)={required:.0f} → {avail_depth:.0f} {cmp} {required:.0f} {mark}")
         if ok:
             break
 
     clip = select_clip(CLIP_LADDER, book.best_ask_yes_size, book.best_ask_no_size)
     print()
-    print(f"  --> Clip duoc chon: {clip:.0f} shares/lenh")
+    print(f"  → Clip được chọn: {clip:.0f} shares/lệnh")
 
     # ── TÓM TẮT ──
     print()
     print("=" * 60)
-    print("TOM TAT")
+    print("TÓM TẮT")
     print("=" * 60)
     print(f"  Market      : {question}")
     print(f"  Bundle Cost : ${bundle_cost:.4f}")
@@ -184,21 +184,21 @@ def display_bundle_check(book: OrderBookState, question: str):
     total_shares = clip * burst
     total_cost = bundle_cost * clip * burst
     print()
-    print(f"  Neu ban burst ({burst} cap):")
-    print(f"    Tong lenh  : {burst * 2} lenh IOC ({burst} YES + {burst} NO)")
-    print(f"    Moi lenh   : {clip:.0f} shares")
-    print(f"    Tong shares: {total_shares:.0f} YES + {total_shares:.0f} NO")
-    print(f"    Tong cost  : ~${total_cost:.2f}")
-    print(f"    Profit neu full fill: ~${profit * total_shares:.2f}")
+    print(f"  Nếu bắn burst ({burst} cặp):")
+    print(f"    Tổng lệnh  : {burst * 2} lệnh IOC ({burst} YES + {burst} NO)")
+    print(f"    Mỗi lệnh   : {clip:.0f} shares")
+    print(f"    Tổng shares : {total_shares:.0f} YES + {total_shares:.0f} NO")
+    print(f"    Tổng cost   : ~${total_cost:.2f}")
+    print(f"    Lợi nhuận nếu full fill: ~${profit * total_shares:.2f}")
 
 
 # ─── MOCK MODE ────────────────────────────────────────────────────
 def run_mock(ask_yes=0.55, ask_no=0.43, depth_yes=25, depth_no=20):
     """Chạy demo với data giả lập — không cần mạng."""
     print("=" * 60)
-    print("BUOC 0: MOCK MODE (data gia lap)")
+    print("BƯỚC 0: MOCK MODE (dữ liệu giả lập)")
     print("=" * 60)
-    print(f"  Khong ket noi mang, dung data gia lap de hoc flow.")
+    print(f"  Không kết nối mạng, dùng dữ liệu giả lập để học flow.")
     print()
 
     question = "Will BTC go Up or Down in the next 15 minutes? (MOCK)"
@@ -217,7 +217,7 @@ def run_mock(ask_yes=0.55, ask_no=0.43, depth_yes=25, depth_no=20):
     )
 
     print("=" * 60)
-    print("BUOC 1: ORDER BOOK (gia lap)")
+    print("BƯỚC 1: ORDER BOOK (giả lập)")
     print("=" * 60)
     print()
     print(f"  YES: ask=${book.best_ask_yes:.3f} (depth:{book.best_ask_yes_size:.0f})  bid=${book.best_bid_yes:.3f} (depth:{book.best_bid_yes_size:.0f})")
@@ -233,19 +233,19 @@ async def run_live():
     import requests
 
     print("=" * 60)
-    print("BUOC 0: TIM MARKET BTC 15 PHUT")
+    print("BƯỚC 0: TÌM MARKET BTC 15 PHÚT")
     print("=" * 60)
 
     try:
         from utils import get_target_markets
         from config import BTC_SLUG_PREFIX
     except ImportError as e:
-        print(f"  [X] Khong import duoc utils/config: {e}")
+        print(f"  [X] Không import được utils/config: {e}")
         return
 
     markets = get_target_markets(slug_prefix=BTC_SLUG_PREFIX, asset_label='BTC')
     if not markets:
-        print("  [X] Khong tim thay market BTC 15m nao active!")
+        print("  [X] Không tìm thấy market BTC 15m nào active!")
         return
 
     m = markets[0]
@@ -269,7 +269,7 @@ async def run_live():
             no_token = tid
 
     if not yes_token or not no_token:
-        print("  [X] Thieu token!")
+        print("  [X] Thiếu token!")
         return
 
     print(f"  YES: {yes_token[:30]}...")
@@ -278,7 +278,7 @@ async def run_live():
     # ── WSS ──
     print()
     print("=" * 60)
-    print("BUOC 1: KET NOI WSS LAY GIA REAL-TIME")
+    print("BƯỚC 1: KẾT NỐI WSS LẤY GIÁ REAL-TIME")
     print("=" * 60)
 
     book = OrderBookState()
@@ -287,7 +287,7 @@ async def run_live():
     try:
         async with aiohttp.ClientSession() as session:
             async with session.ws_connect(WS_URL, heartbeat=20, timeout=15) as ws:
-                print("  [OK] Da ket noi WSS!")
+                print("  [OK] Đã kết nối WSS!")
                 await ws.send_json({"assets_ids": [yes_token, no_token], "type": "market"})
 
                 # Ping task
@@ -355,7 +355,7 @@ async def run_live():
 
     # REST fallback
     if not yes_ok or not no_ok:
-        print("  Fallback sang REST API...")
+        print("  Chuyển sang REST API fallback...")
         for tid, side in [(yes_token, "YES"), (no_token, "NO")]:
             if side == "YES" and yes_ok:
                 continue
@@ -380,7 +380,7 @@ async def run_live():
                 print(f"  [X] REST {side}: {e}")
 
     if not yes_ok or not no_ok:
-        print("\n  [X] Khong lay duoc orderbook. Dung lai.")
+        print("\n  [X] Không lấy được orderbook đầy đủ. Dừng lại.")
         return
 
     display_bundle_check(book, question)
