@@ -107,29 +107,29 @@ def get_target_markets(
         return filtered
 
     def is_active_and_valid(market):
-    if market.get("closed") is True:
-        return False
+        if market.get("closed") is True:
+            return False
 
-    # Normalize end_date_iso from any known field so downstream consumers (PhaseManager/MarketState)
-    # always have a usable expiry timestamp.
-    end_iso = (
-        market.get("end_date_iso")
-        or market.get("endDate")
-        or market.get("end_date")
-        or market.get("end_date_iso_string")
-    )
-    if not end_iso:
-        return False
+        # Normalize end_date_iso from any known field so downstream consumers (PhaseManager/MarketState)
+        # always have a usable expiry timestamp.
+        end_iso = (
+            market.get("end_date_iso")
+            or market.get("endDate")
+            or market.get("end_date")
+            or market.get("end_date_iso_string")
+        )
+        if not end_iso:
+            return False
 
-    # Persist the normalized field for callers
-    market["end_date_iso"] = end_iso
+        # Persist the normalized field for callers
+        market["end_date_iso"] = end_iso
 
-    try:
-        now = datetime.now(timezone.utc)
-        end_date = dateutil.parser.isoparse(end_iso)
-        return end_date > now
-    except Exception:
-        return False
+        try:
+            now = datetime.now(timezone.utc)
+            end_date = dateutil.parser.isoparse(end_iso)
+            return end_date > now
+        except Exception:
+            return False
 
     def normalize_market_stub(slug, question, condition_id=None, end_date=None):
         return [{
