@@ -132,14 +132,17 @@ def display_bundle_check(book: OrderBookState, question: str):
     print(f"              = ${bundle_cost:.4f}")
     print()
 
-    if bundle_cost <= MAX_BUNDLE_COST:
-        print(f"  [OK] Bundle ${bundle_cost:.4f} <= max ${MAX_BUNDLE_COST:.3f} --> CO THE VAO LENH!")
-        print(f"  Profit potential = $1.00 - ${bundle_cost:.4f} = ${profit:.4f}/pair")
-    else:
+    if bundle_cost > MAX_BUNDLE_COST:
         print(f"  [NO] Bundle ${bundle_cost:.4f} > max ${MAX_BUNDLE_COST:.3f} --> KHONG VAO LENH!")
         print(f"  Lo neu vao = ${profit:.4f}/pair")
+        print()
+        print("  --> Skip buoc 3 (clip size) vi bundle qua dat.")
+        return
 
-    # ── BƯỚC 3: CHỌN CLIP SIZE ──
+    print(f"  [OK] Bundle ${bundle_cost:.4f} <= max ${MAX_BUNDLE_COST:.3f} --> CO THE VAO LENH!")
+    print(f"  Profit potential = $1.00 - ${bundle_cost:.4f} = ${profit:.4f}/pair")
+
+    # ── BƯỚC 3: CHỌN CLIP SIZE (chỉ khi bundle OK) ──
     print()
     print("=" * 60)
     print("BUOC 3: CHON CLIP SIZE")
@@ -176,19 +179,17 @@ def display_bundle_check(book: OrderBookState, question: str):
     print(f"  Bundle Cost : ${bundle_cost:.4f}")
     print(f"  Profit/pair : ${profit:.4f}")
     print(f"  Clip Size   : {clip:.0f} shares")
-    print(f"  Vao lenh?   : {'CO [OK]' if bundle_cost <= MAX_BUNDLE_COST else 'KHONG [X]'}")
 
-    if bundle_cost <= MAX_BUNDLE_COST:
-        burst = BURST_CHILD_COUNT
-        total_shares = clip * burst
-        total_cost = bundle_cost * clip * burst
-        print()
-        print(f"  Neu ban burst ({burst} cap):")
-        print(f"    Tong lenh  : {burst * 2} lenh IOC ({burst} YES + {burst} NO)")
-        print(f"    Moi lenh   : {clip:.0f} shares")
-        print(f"    Tong shares: {total_shares:.0f} YES + {total_shares:.0f} NO")
-        print(f"    Tong cost  : ~${total_cost:.2f}")
-        print(f"    Profit neu full fill: ~${profit * total_shares:.2f}")
+    burst = BURST_CHILD_COUNT
+    total_shares = clip * burst
+    total_cost = bundle_cost * clip * burst
+    print()
+    print(f"  Neu ban burst ({burst} cap):")
+    print(f"    Tong lenh  : {burst * 2} lenh IOC ({burst} YES + {burst} NO)")
+    print(f"    Moi lenh   : {clip:.0f} shares")
+    print(f"    Tong shares: {total_shares:.0f} YES + {total_shares:.0f} NO")
+    print(f"    Tong cost  : ~${total_cost:.2f}")
+    print(f"    Profit neu full fill: ~${profit * total_shares:.2f}")
 
 
 # ─── MOCK MODE ────────────────────────────────────────────────────
